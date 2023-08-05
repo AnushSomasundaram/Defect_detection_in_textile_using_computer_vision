@@ -1,0 +1,1 @@
+This project let's us compare cloth cuts, it uses vgg 16 on pytorch for defect recognition. THe weights haven't  been provided in this repo as they we're too big to upload, so just run the training script.
