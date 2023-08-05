@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Flask Application</title>
+  <style>
+    body {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      font-family: Arial, sans-serif;
+    }
+
+    .container {
+      text-align: center;
+    }
+
+    .upload-button {
+      background-color: #4CAF50;
+      color: white;
+      padding: 10px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    .form-group label {
+      display: block;
+    }
+
+    .form-group select{
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      box-sizing: border-box;
+    }
+    
+    .form-group input[type="file"] {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      box-sizing: border-box;
+      color: transparent;
+      cursor: none;
+
+    }
+
+    .form-group input[type="submit"] {
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      text-align: center;
+      text-decoration: none;
+      display: inline-block;
+      font-size: 16px;
+      margin-top: 10px;
+      cursor: none;
+      border-radius: 4px;
+    }
+
+    img{
+      display: none;
+      justify-content: center; 
+      height: 250px;
+      width: 300px;
+    }
+
+  </style>
+</head>
+<body>
+  <script>
+    function handleImageUpload(event) {
+      const file = event.target.files[0];
+      const reader = new FileReader();
+      reader.onload = function(event) {
+        const image = document.getElementById('input_image');
+        image.src = event.target.result;
+        image.style.display = 'inline-block';
+      }
+      reader.readAsDataURL(file);
+    }
+    
+    function handleImageSubmit() {
+      const file = document.getElementById('image_input').files[0];
+      const options = document.getElementById('options').value;
+      const formData = new FormData();
+      formData.append('image', file);
+      formData.append('options', options);
+      
+      fetch('/process', {
+        method: 'POST',
+        body: formData
+      })
+      .then(response => response.text())
+      .then(result => {
+        const image = document.getElementById('processed_image');
+        image.src = "{{ url_for('processed_image') }}";
+        image.style.display = 'inline-block';
+      })
+      .catch(error => console.error('Error:', error));
+    }
+
+    function submitModel() {
+        var input = document.createElement('input');
+        input.type = 'file';
+        input.accept = 'image/*';
+        input.onchange = handleModelSelection;
+        input.click();
+    }
+
+    function handleModelSelection(event) {
+      var modelName = prompt('Enter the model name');
+      var file = event.target.files[0];
+      var formData = new FormData();
+      formData.append('image', file);
+      formData.append('name', modelName);
+
+      fetch('/models', {
+        method: 'POST',
+        body: formData
+      }).then(response => response.text())
+      .then(result => {
+        var selectElement = document.getElementById('options');
+        var newOption = document.createElement('option');
+        newOption.value = modelName;
+        newOption.text = modelName;
+        selectElement.insertBefore(newOption, selectElement.options[selectElement.selectedIndex]);
+        newOption.selected = true;
+      })
+    }
+    
+  </script>
+
+  <div class="container">
+    <h4>Select Model</h4>
+    <form method="POST" enctype="multipart/form-data">
+      <div class="form-group">
+        <select id="options" name="options">
+          {% for model in models %}
+            <option>{{ model }}</option>
+          {% endfor %}
+          <option value="+" onclick="submitModel()">+</option>
+        </select>
+        <br></br>
+        <button type="button" style="font-weight: bold;" onclick="submitModel()">+</button>
+
+      </div>
+      <div class="form-group">
+        <input type="file" id="image_input" onchange="handleImageUpload(event)" style="display: none;">
+        <center>
+        <label for="image_input" class="upload-button">Upload Image</label>
+        </center>
+        <br></br>
+        <div class="form-group">
+          <img id="input_image" src="#">
+        </div>
+      </div>
+      <div class="form-group">
+        <input type="button" value="Process" style="font-weight: bold;" onclick="handleImageSubmit()">
+      </div>
+    </form>
+
+    <div class="processed_image">
+      <br></br>
+      <img id="processed_image" src="#">
+    </div>
+    <div>
+      <br></br>
+      <h2> {{proceed_discard}}</h2>
+    </div>  
+  </div>
+</body>
+</html>
