@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Process Image</title>
+    <script>
+      function handleImageUpload(event) {
+        const file = event.target.files[0];
+        const reader = new FileReader();
+        
+        reader.onload = function(event) {
+          const image = document.getElementById('uploaded-image');
+          image.src = event.target.result;
+        }
+
+        reader.readAsDataURL(file);
+      }
+      
+      function handleImageProcessing(event) {
+        const fileInput = document.getElementById('image-input');
+        const file = fileInput.files[0];
+        
+        const formData = new FormData();
+        formData.append('image', file);
+        
+        fetch('/process', {
+          method: 'POST',
+          body: formData
+        })
+        .then(response => response.text())
+        .then(result => {
+          console.log(result);
+          const image = document.getElementById('processed-image');
+          image.src = "{{ image_url }}";
+        })
+        .catch(error => console.error('Error:', error));
+      }
+    </script>
+  </head>
+
+  <body>
+    <h2>Image Upload</h2>
+    <form method="POST" enctype="multipart/form-data">
+      <input type="file" id="image-input" accept="image/*" onchange="handleImageUpload(event)">
+      </br></br>
+      <input type="button" value="Process Image" onclick="handleImageProcessing(event)">
+    </form>
+    <h3>Uploaded Image :</h3>
+    <img id="uploaded-image" src="#" alt="" height="250px" width="250px">
+    <h3>Processed Image :</h3>
+    <img id="processed-image" src="#" alt="" height="250px" width="250px">
+  </body>
+</html>
