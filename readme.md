@@ -3,6 +3,6 @@ This project let's us compare cloth cuts, it uses vgg 16 on pytorch for defect r
 ![Screenshot 2023-08-05 at 9 34 13 AM](https://github.com/AnushSomasundaram/Defect_detection_in_textile_using_computer_vision/assets/26061559/5a6041c0-1f00-4938-97f1-1c38a93d737c)
 
 
-1 . Download the repo
-2.  Makesure you have pytorch and streamlit
-3.  Run Dashboard.py under Prototype1/streamlit_app/dashboard.py
+1 . Download the repo                                                                                                                                                                                             
+2.  Makesure you have pytorch and streamlit                                                                                                                                                                       
+3.  Run Dashboard.py under Prototype1/streamlit_app/dashboard.py                                                                                                                                                    
